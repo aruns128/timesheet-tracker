@@ -114,7 +114,7 @@
 		<!-- Main Content -->
 		<div class="flex min-h-screen flex-1 flex-col">
 			<!-- Top Bar -->
-			<div class="flex w-full items-center justify-between bg-white p-4 shadow-md">
+			<div class="flex w-full items-center justify-between bg-zinc-100 p-4 shadow-md">
 				<button
 					class="block items-center justify-center text-gray-700 sm:hidden"
 					onclick={toggleSidebar}
