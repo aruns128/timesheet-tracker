@@ -22,7 +22,9 @@
 	}
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
+<div
+	class="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300"
+>
 	<div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
 		<h2 class="mb-4 text-center text-3xl font-bold text-gray-700">Welcome Back</h2>
 		{#if $error}
@@ -34,7 +36,7 @@
 				type="text"
 				bind:value={$username}
 				placeholder="Username"
-				class="w-full rounded-lg bg-gray-100 p-3 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 shadow-sm"
+				class="w-full rounded-lg bg-gray-100 p-3 text-gray-800 shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
 			/>
 		</div>
 
@@ -43,12 +45,12 @@
 				type={$showPassword ? 'text' : 'password'}
 				bind:value={$password}
 				placeholder="Password"
-				class="w-full rounded-lg bg-gray-100 p-3 text-gray-800 pr-12 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 shadow-sm"
+				class="w-full rounded-lg bg-gray-100 p-3 pr-12 text-gray-800 shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
 			/>
 			<button
 				type="button"
 				on:click={togglePassword}
-				class="absolute right-3 top-3 text-gray-500 hover:text-gray-700 transition-all"
+				class="absolute top-3 right-3 text-gray-500 transition-all hover:text-gray-700"
 			>
 				{#if $showPassword}
 					<EyeOff size={20} />

@@ -5,6 +5,7 @@ export type User = {
 	username: string;
 	password: string;
 	role: 'admin' | 'user';
+	fullname: string;
 };
 
 export type AuthState = {
@@ -17,5 +18,20 @@ const authStore = writable<AuthState>({
 	isAuthenticated: false
 });
 
-// ✅ Explicitly export the store (default export won't work in SvelteKit)
+// ✅ Only access `localStorage` in the browser
+if (typeof window !== 'undefined') {
+	const storedUser = localStorage.getItem('user');
+	if (storedUser) {
+		authStore.set({ user: JSON.parse(storedUser), isAuthenticated: true });
+	}
+
+	authStore.subscribe((value) => {
+		if (value.isAuthenticated) {
+			localStorage.setItem('user', JSON.stringify(value.user));
+		} else {
+			localStorage.removeItem('user');
+		}
+	});
+}
+
 export { authStore };

@@ -1,7 +1,7 @@
 {
 	"users": [
-		{ "id": 1, "username": "admin", "password": "admin123", "role": "admin" },
-		{ "id": 2, "username": "user", "password": "user123", "role": "user" }
+		{ "id": 1, "username": "admin", "fullname": "Admin", "password": "admin123", "role": "admin" },
+		{ "id": 2, "username": "user", "fullname": "User", "password": "user123", "role": "user" }
 	],
 	"timesheets": []
 }
