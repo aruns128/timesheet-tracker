@@ -13,6 +13,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import { routePermissions } from '../scripts/routes';
 
 	let isSidebarOpen = $state(true);
 	let auth: { isAuthenticated: boolean; user: any } = $state({
@@ -25,9 +26,15 @@
 	let showDropdown = $state(false);
 
 	onMount(() => {
-		authStore.subscribe((value) => {
+		authStore.subscribe((value:any) => {
 			auth = value;
-			loading = false;
+			loading = false; // Set loading to false once auth data is available
+
+			// Restrict access when authentication is ready
+			if (!routePermissions[page.url.pathname as keyof typeof routePermissions]?.includes(auth?.user?.role)) {
+				goto('/dashboard');
+			}
+			
 		});
 	});
 
@@ -49,7 +56,9 @@
 
 	$effect(() => {
 		currentPath = page.url.pathname;
-		pageTitle = routeTitles[`${page.url.pathname}`] || 'Dashboard';
+		pageTitle = routeTitles[`${currentPath}`] || 'Dashboard';
+
+
 	});
 
 	function getLinkClasses(path: string) {
@@ -90,24 +99,26 @@
 
 			<!-- Navigation Links -->
 			<nav class="mt-5 flex flex-1 flex-col items-center justify-center gap-2">
-				<a href="/dashboard" class={getLinkClasses('/dashboard')}>
-					<Home size={20} />
-					<span class="opacity-100 transition-all duration-300" class:hidden={!isSidebarOpen}
-						>Dashboard</span
-					>
-				</a>
-				<a href="/timesheets" class={getLinkClasses('/timesheets')}>
-					<ClipboardList size={20} />
-					<span class="opacity-100 transition-all duration-300" class:hidden={!isSidebarOpen}
-						>Timesheets</span
-					>
-				</a>
-				<a href="/user-management" class={getLinkClasses('/user-management')}>
-					<UserRoundCog size={20} />
-					<span class="opacity-100 transition-all duration-300" class:hidden={!isSidebarOpen}
-						>User Management</span
-					>
-				</a>
+				{#if routePermissions['/dashboard'].includes(auth?.user?.role)}
+					<a href="/dashboard" class={getLinkClasses('/dashboard')}>
+						<Home size={20} />
+						<span class:hidden={!isSidebarOpen}>Dashboard</span>
+					</a>
+				{/if}
+			
+				{#if routePermissions['/timesheets'].includes(auth?.user?.role)}
+					<a href="/timesheets" class={getLinkClasses('/timesheets')}>
+						<ClipboardList size={20} />
+						<span class:hidden={!isSidebarOpen}>Timesheets</span>
+					</a>
+				{/if}
+			
+				{#if routePermissions['/user-management'].includes(auth?.user?.role)}
+					<a href="/user-management" class={getLinkClasses('/user-management')}>
+						<UserRoundCog size={20} />
+						<span class:hidden={!isSidebarOpen}>User Management</span>
+					</a>
+				{/if}
 			</nav>
 		</div>
 
