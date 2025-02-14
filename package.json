@@ -8,7 +8,7 @@
 		"server": "nodemon --exec \"npx json-server --watch db.json --port 5000\"",
 		"start": "concurrently \"npm run dev\" \"npm run server\"",
 		"build": "vite build",
-		"preview": "vite preview",
+		"preview": "concurrently \"vite preview\" \"npm run server\"",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

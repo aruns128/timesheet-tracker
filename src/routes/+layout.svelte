@@ -31,8 +31,6 @@
 		});
 	});
 
-	// svelte-ignore state_referenced_locally
-	console.log('auth', auth);
 	function toggleSidebar() {
 		isSidebarOpen = !isSidebarOpen;
 	}

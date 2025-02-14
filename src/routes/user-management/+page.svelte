@@ -20,7 +20,6 @@
 		authStore.set({ user: null, isAuthenticated: false });
 		localStorage.removeItem('user');
 		let auth = get(authStore);
-		console.log(auth);
 		goto('/login'); // Redirect to login after logout
 	}
 </script>

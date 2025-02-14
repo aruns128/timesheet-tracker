@@ -12,8 +12,6 @@ export async function login(username: string, password: string) {
 		if (user) {
 			authStore.set({ user, isAuthenticated: true });
 			localStorage.setItem('user', JSON.stringify(user)); // Persist session
-			const auth = get(authStore);
-			console.log(auth);
 			goto('/dashboard'); // Redirect after login
 		} else {
 			authStore.set({ user: null, isAuthenticated: false }); // Reset on failure
