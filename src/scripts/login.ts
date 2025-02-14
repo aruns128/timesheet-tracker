@@ -1,6 +1,5 @@
 import { goto } from '$app/navigation';
 import { authStore, type User } from '../stores/auth';
-import { get } from 'svelte/store';
 
 export async function login(username: string, password: string) {
 	try {
