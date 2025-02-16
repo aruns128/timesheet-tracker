@@ -1,7 +1,56 @@
 {
-	"users": [
-		{ "id": 1, "username": "admin", "fullname": "Admin", "password": "admin123", "role": "admin" },
-		{ "id": 2, "username": "user", "fullname": "User", "password": "user123", "role": "user" }
-	],
-	"timesheets": []
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "fullname": "Admin",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "username": "user",
+      "fullname": "User",
+      "password": "user123",
+      "role": "user"
+    }
+  ],
+  "timesheets": [
+    {
+      "project": "Website Redesign",
+      "date": "2025-02-14",
+      "jiraNo": "WEB-102",
+      "taskUpdates": "Completed the homepage layout design and began working on the contact page.",
+      "workType": "Development",
+      "status": "In Progress",
+      "name": "Alice Johnson",
+      "hours": "5",
+      "id": "2008"
+    },
+    {
+      "project": "Mobile App Update",
+      "date": "2025-02-14",
+      "jiraNo": "APP-201",
+      "taskUpdates": "Integrated new feature for push notifications and fixed minor UI bugs.",
+      "workType": "Development",
+      "status": "In Progress",
+      "name": "Bob Smith",
+      "hours": "3",
+      "id": "9fb6"
+    },
+    {
+      "id": "cb9b",
+      "project": "Website Redesign",
+      "date": "2025-02-12",
+      "jiraNo": "APP-202",
+      "taskUpdates": "test",
+      "workType": "Development",
+      "status": "Completed",
+      "name": "User",
+      "hours": "8"
+    }
+  ],
+  "projects": [],
+  "workType": [],
+  "status": []
 }
