@@ -20,7 +20,7 @@ export const fetchTimesheets = async () => {
   timesheets.set(await res.json());
 };
 
-export const addTimesheet = async (newTimesheet: any) => {
+export const addTimesheet = async (newTimesheet: Timesheet) => {
     // Ensure hours are within the allowed range
     if (+newTimesheet.hours < 0 || +newTimesheet.hours > 8) {
       alert('Hours must be between 0 and 8');
@@ -50,3 +50,19 @@ export const addTimesheet = async (newTimesheet: any) => {
     fetchTimesheets();
   };
   
+
+// ✅ New update functionality
+export const updateTimesheet = async (id:string,updatedTimesheet: Timesheet) => {
+    if (+updatedTimesheet.hours < 0 || +updatedTimesheet.hours > 8) {
+        alert('Hours must be between 0 and 8');
+        return;
+    }
+
+    await fetch(`http://localhost:5000/timesheets/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTimesheet),
+    });
+
+    fetchTimesheets();
+};

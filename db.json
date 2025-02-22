@@ -19,13 +19,13 @@
     {
       "project": "Website Redesign",
       "date": "2025-02-14",
-      "jiraNo": "WEB-102",
+      "jiraNo": "WEB-105",
       "taskUpdates": "Completed the homepage layout design and began working on the contact page.",
       "workType": "Development",
       "status": "In Progress",
       "name": "Alice Johnson",
       "hours": "5",
-      "id": "2008"
+      "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
     },
     {
       "project": "Mobile App Update",
@@ -36,13 +36,24 @@
       "status": "In Progress",
       "name": "Bob Smith",
       "hours": "3",
-      "id": "9fb6"
+      "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6w"
     },
     {
-      "id": "cb9b",
+      "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6f",
       "project": "Website Redesign",
       "date": "2025-02-12",
       "jiraNo": "APP-202",
+      "taskUpdates": "test",
+      "workType": "Development",
+      "status": "Completed",
+      "name": "User",
+      "hours": "8"
+    },
+    {
+      "id": "6d074239-5a09-4eaa-8ce1-5eaaf724fb8d",
+      "project": "Web Design",
+      "date": "2025-02-22",
+      "jiraNo": "Web-23",
       "taskUpdates": "test",
       "workType": "Development",
       "status": "Completed",
