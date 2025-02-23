@@ -25,7 +25,7 @@
 		status: 'Completed',
 		name: '',
 		hours: '',
-    id:uuidv4()
+    	id:uuidv4()
 	});
 
 	let startDate = writable('');
@@ -124,9 +124,9 @@
 
 {#if $showNewRow}
 	<!-- Modal for creating a new timesheet -->
-	<div class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center">
+	<div class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs">
 		<div
-			class="max-h-screen w-full overflow-y-auto rounded bg-white p-6 shadow-lg sm:w-96 lg:w-1/2 xl:w-1/3"
+			class="max-h-screen w-full overflow-y-auto rounded bg-slate-100 m-2 p-6 shadow-lg sm:w-96 lg:w-1/2 xl:w-1/3"
 		>
 			<div class="space-y-4">
 				<div>

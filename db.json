@@ -3,14 +3,14 @@
     {
       "id": "1",
       "username": "admin",
-      "fullname": "Admin",
+      "fullname": "Arunkumar S",
       "password": "admin123",
       "role": "admin"
     },
     {
       "id": "2",
       "username": "user",
-      "fullname": "User",
+      "fullname": "Arun S",
       "password": "user123",
       "role": "user"
     }
@@ -61,8 +61,44 @@
       "hours": "8"
     }
   ],
-  "projects": [{"id":"Web Design","value":"Web Design"},{"id":"Mobile App","value":"Mobile App"}],
-  "workType": [{"id":"Development","value":"Development"},{"id":"Test","value":"Test"}],
-  "status": [{"id":"Inprogress","value":"Inprogress"},{"id":"Completed","value":"Completed"}],
-  "roles":[{"id":"admin","value":"Admin"},{"id":"user","value":"User"}]
+  "projects": [
+    {
+      "id": "Web Design",
+      "value": "Web Design"
+    },
+    {
+      "id": "Mobile App",
+      "value": "Mobile App"
+    }
+  ],
+  "workType": [
+    {
+      "id": "Development",
+      "value": "Development"
+    },
+    {
+      "id": "Test",
+      "value": "Test"
+    }
+  ],
+  "status": [
+    {
+      "id": "Inprogress",
+      "value": "Inprogress"
+    },
+    {
+      "id": "Completed",
+      "value": "Completed"
+    }
+  ],
+  "roles": [
+    {
+      "id": "admin",
+      "value": "Admin"
+    },
+    {
+      "id": "user",
+      "value": "User"
+    }
+  ]
 }

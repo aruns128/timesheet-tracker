@@ -15,7 +15,7 @@ export async function fetchUsers(): Promise<User[]> {
 	}
 }
 
-export async function createUser(user: Omit<User, 'id'>): Promise<User> {
+export async function createUser(user: User): Promise<User> {
 	try {
 		const res = await fetch(API_URL, {
 			method: 'POST',
@@ -32,7 +32,7 @@ export async function createUser(user: Omit<User, 'id'>): Promise<User> {
 	}
 }
 
-export async function deleteUser(userId: number): Promise<boolean> {
+export async function deleteUser(userId: string): Promise<boolean> {
 	if (!confirm('Are you sure you want to delete this user?')) return false;
 
 	try {
