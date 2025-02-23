@@ -1,9 +1,11 @@
 import { goto } from '$app/navigation';
 import { authStore, type User } from '../stores/auth';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function login(username: string, password: string) {
 	try {
-		const res = await fetch('http://localhost:5000/users');
+		const res = await fetch(`${API_URL}/users`);
 		const users: User[] = await res.json();
 
 		const user = users.find((u) => u.username === username && u.password === password);

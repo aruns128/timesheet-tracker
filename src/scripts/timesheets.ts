@@ -12,11 +12,12 @@ interface Timesheet {
     hours: string;
   }
   
-  export const timesheets = writable<Timesheet[]>([]);
+export const timesheets = writable<Timesheet[]>([]);
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const fetchTimesheets = async () => {
-  const res = await fetch('http://localhost:5000/timesheets');
+  const res = await fetch(`${API_URL}/timesheets`);
   timesheets.set(await res.json());
 };
 
@@ -28,7 +29,7 @@ export const addTimesheet = async (newTimesheet: Timesheet) => {
     }
   
     // Send the new timesheet to the backend
-    await fetch('http://localhost:5000/timesheets', {
+    await fetch(`${API_URL}/timesheets`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newTimesheet), // Send newTimesheet, not formData
@@ -41,7 +42,7 @@ export const addTimesheet = async (newTimesheet: Timesheet) => {
 
   export const deleteTimesheet = async (id: string) => {
     // Send DELETE request to remove the timesheet
-    await fetch(`http://localhost:5000/timesheets/${id}`, {
+    await fetch(`${API_URL}/timesheets/${id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -58,7 +59,7 @@ export const updateTimesheet = async (id:string,updatedTimesheet: Timesheet) => 
         return;
     }
 
-    await fetch(`http://localhost:5000/timesheets/${id}`, {
+    await fetch(`${API_URL}/timesheets/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedTimesheet),

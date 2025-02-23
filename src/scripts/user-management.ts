@@ -1,6 +1,7 @@
 import { setUsers, addUser, removeUser, type User } from '../stores/users';
 
-const API_URL = 'http://localhost:5000/users';
+const API = import.meta.env.VITE_API_URL;
+const API_URL = `${API}/users`;
 
 export async function fetchUsers(): Promise<User[]> {
 	try {
