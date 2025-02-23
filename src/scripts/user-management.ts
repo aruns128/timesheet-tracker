@@ -34,8 +34,6 @@ export async function createUser(user: User): Promise<User> {
 }
 
 export async function deleteUser(userId: string): Promise<boolean> {
-	if (!confirm('Are you sure you want to delete this user?')) return false;
-
 	try {
 		const res = await fetch(`${API_URL}/${userId}`, { method: 'DELETE' });
 		if (!res.ok) throw new Error('Failed to delete user');

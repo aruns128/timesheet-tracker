@@ -26,15 +26,18 @@
 	let showDropdown = $state(false);
 
 	onMount(() => {
-		authStore.subscribe((value:any) => {
+		authStore.subscribe((value: any) => {
 			auth = value;
 			loading = false; // Set loading to false once auth data is available
 
 			// Restrict access when authentication is ready
-			if (!routePermissions[page.url.pathname as keyof typeof routePermissions]?.includes(auth?.user?.role)) {
+			if (
+				!routePermissions[page.url.pathname as keyof typeof routePermissions]?.includes(
+					auth?.user?.role
+				)
+			) {
 				goto('/dashboard');
 			}
-			
 		});
 	});
 
@@ -57,8 +60,6 @@
 	$effect(() => {
 		currentPath = page.url.pathname;
 		pageTitle = routeTitles[`${currentPath}`] || 'Dashboard';
-
-
 	});
 
 	function getLinkClasses(path: string) {
@@ -105,14 +106,14 @@
 						<span class:hidden={!isSidebarOpen}>Dashboard</span>
 					</a>
 				{/if}
-			
+
 				{#if routePermissions['/timesheets'].includes(auth?.user?.role)}
 					<a href="/timesheets" class={getLinkClasses('/timesheets')}>
 						<ClipboardList size={20} />
 						<span class:hidden={!isSidebarOpen}>Timesheets</span>
 					</a>
 				{/if}
-			
+
 				{#if routePermissions['/user-management'].includes(auth?.user?.role)}
 					<a href="/user-management" class={getLinkClasses('/user-management')}>
 						<UserRoundCog size={20} />

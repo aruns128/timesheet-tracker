@@ -2,4 +2,4 @@
 	import UserManagement from '../../components/screens/UserManagment.svelte';
 </script>
 
-<UserManagement/>
+<UserManagement />
