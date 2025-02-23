@@ -1,10 +1,10 @@
 import { writable } from 'svelte/store';
 
 export type User = {
-	id: number;
+	id: string;
 	username: string;
 	password: string;
-	role: 'admin' | 'user';
+	role: string;
 	fullname: string;
 };
 
@@ -18,6 +18,6 @@ export function addUser(user: User) {
 	userStore.update((users) => [...users, user]);
 }
 
-export function removeUser(userId: number) {
+export function removeUser(userId: string) {
 	userStore.update((users) => users.filter((user) => user.id !== userId));
 }
