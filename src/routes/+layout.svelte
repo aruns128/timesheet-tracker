@@ -144,7 +144,7 @@
 						{auth?.user?.fullname?.[0] || 'U'}
 					</button>
 					{#if showDropdown}
-						<div class="absolute right-0 mt-2 w-40 rounded-md bg-white py-2 shadow-md">
+						<div class="absolute right-0 mt-2 w-50 rounded-md bg-white py-2 shadow-md">
 							<button class="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100">
 								<User size={20} class="mr-2 inline" />
 								{auth?.user?.fullname}
