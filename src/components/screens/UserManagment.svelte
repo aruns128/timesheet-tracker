@@ -8,8 +8,14 @@
 	import { fetchRoles, type SelectTypes } from '../../scripts/utils';
 	import Select from 'svelte-select';
 	import { fade, fly } from 'svelte/transition';
+	import { validateField } from '../../scripts/validation';
 
 	let users: User[] = [];
+
+	let errorUsername = writable('');
+	let errorFullname = writable('');
+	let errorRole = writable('');
+	let errorPassword = writable('');
 
 	let roles = writable<SelectTypes[]>([]); // Store for role options
 
@@ -68,10 +74,37 @@
 		showNewUser.set(true);
 	}
 
+	function validateForm() {
+		let isValid = true;
+		// Validate each field and set the respective error store if necessary
+		validateField($newUser.fullname, 'Full Name', errorFullname, true);
+		validateField($newUser.username, 'User Name', errorUsername, true);
+		validateField($newUser.role, 'Role', errorRole, true);
+		validateField($newUser.password, 'Password', errorPassword, true);
+
+		// Check if any error exists, return false to prevent submission
+		if ($errorFullname || $errorUsername || $errorRole || $errorPassword) {
+			isValid = false;
+		}
+
+		return isValid;
+	}
+
 	function saveUser() {
-		const userData = $newUser;
-		createUser(userData);
+		// Validate before saving
+		if (validateForm()) {
+			const userData = $newUser;
+			createUser(userData);
+			showNewUser.set(false);
+		}
+	}
+
+	function cancelSaveUser() {
 		showNewUser.set(false);
+		errorFullname.set('');
+		errorPassword.set('');
+		errorRole.set('');
+		errorUsername.set('');
 	}
 </script>
 
@@ -131,6 +164,9 @@
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 						placeholder="Enter Fullname"
 					/>
+					{#if $errorFullname}
+						<div class="mt-2 text-sm text-red-500">{$errorFullname}</div>
+					{/if}
 				</div>
 
 				<!-- Username -->
@@ -145,6 +181,9 @@
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 						placeholder="Enter Username"
 					/>
+					{#if $errorUsername}
+						<div class="mt-2 text-sm text-red-500">{$errorUsername}</div>
+					{/if}
 				</div>
 
 				<!-- Role Selection -->
@@ -165,6 +204,9 @@
 								on:select={(event) => ($newUser.role = event.detail.value)}
 							/>
 						</div>
+						{#if $errorRole}
+							<div class="mt-2 text-sm text-red-500">{$errorRole}</div>
+						{/if}
 					</div>
 				</div>
 
@@ -180,6 +222,9 @@
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 						placeholder="Enter Password"
 					/>
+					{#if $errorPassword}
+						<div class="mt-2 text-sm text-red-500">{$errorPassword}</div>
+					{/if}
 				</div>
 
 				<!-- Buttons -->
@@ -191,7 +236,7 @@
 						Save
 					</button>
 					<button
-						on:click={() => showNewUser.set(false)}
+						on:click={cancelSaveUser}
 						class="w-full rounded-lg bg-gray-500 px-4 py-2 text-white shadow-md transition-all hover:bg-gray-600 focus:ring focus:ring-gray-300 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-800"
 					>
 						Cancel

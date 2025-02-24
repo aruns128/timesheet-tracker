@@ -14,21 +14,11 @@
 	import Select from 'svelte-select';
 	import { fetchProjects, fetchStatus, fetchWorkType, type SelectTypes } from '../../scripts/utils';
 	import { fade, fly } from 'svelte/transition';
+	import { validateField } from '../../scripts/validation';
 
 	let showNewRow = writable(false);
 	let showConfirmDelete = writable(false);
 	let deleteTimesheetId = writable('');
-	let newTimesheet = writable<Timesheet>({
-		project: { label: '', value: '', id: uuidv4() }, // Initialize with an object
-		date: '',
-		jiraNo: '',
-		taskUpdates: '',
-		workType: { label: 'Development', value: 'Development', id: 'Development' },
-		status: { label: 'Completed', value: 'Completed', id: 'Completed' },
-		name: '',
-		hours: '',
-		id: uuidv4()
-	});
 
 	let startDate = writable('');
 	let endDate = writable('');
@@ -36,23 +26,79 @@
 
 	let editingTimesheetId = writable(null);
 
+	let errorDate = writable('');
+	let errorJiraNo = writable('');
+	let errorTaskUpdates = writable('');
+	let errorName = writable('');
+	let errorHours = writable('');
+
+	function validateForm() {
+		let isValid = true;
+		// Validate each field and set the respective error store if necessary
+		validateField($newTimesheet.date, 'Date', errorDate, true);
+		validateField($newTimesheet.jiraNo, 'Jira No', errorJiraNo, true);
+		validateField($newTimesheet.taskUpdates, 'Task Updates', errorTaskUpdates, true);
+		validateField($newTimesheet.name, 'Name', errorName, true);
+		validateField($newTimesheet.hours, 'Hours', errorHours, true);
+
+		// Check if any error exists, return false to prevent submission
+		if ($errorDate || $errorJiraNo || $errorTaskUpdates || $errorName || $errorHours) {
+			isValid = false;
+		}
+
+		return isValid;
+	}
+
 	function editTimesheet(timesheet: any) {
 		newTimesheet.set({ ...timesheet });
 		editingTimesheetId.set(timesheet.id); // Store the ID of the timesheet being edited
 		showNewRow.set(true);
 	}
 
+	let workTypes = writable<SelectTypes[]>([]); // Store for role options
+
+	async function loadWorkTypes() {
+		const fetchedWorkTypes = await fetchWorkType();
+		workTypes.set(fetchedWorkTypes);
+	}
+
+	let status = writable<SelectTypes[]>([]); // Store for role options
+
+	async function loadStatus() {
+		const fetchedStatus = await fetchStatus();
+		status.set(fetchedStatus);
+	}
+
+	let projects = writable<SelectTypes[]>([]); // Store for role options
+
+	async function loadProjects() {
+		const fetchedProjects = await fetchProjects();
+		projects.set(fetchedProjects);
+	}
+
+	let newTimesheet = writable<Timesheet>({
+		date: '',
+		jiraNo: '',
+		taskUpdates: '',
+		name: '',
+		hours: '',
+		id: uuidv4(),
+		project: $projects[0],
+		workType: $workTypes[0],
+		status: $status[0]
+	});
+
 	function addNewRow() {
 		newTimesheet.set({
-			project: { label: '', value: '', id: uuidv4() }, // Initialize with an object
 			date: '',
 			jiraNo: '',
 			taskUpdates: '',
-			workType: { label: 'Development', value: 'Development', id: 'Development' },
-			status: { label: 'Completed', value: 'Completed', id: 'Completed' },
 			name: '',
 			hours: '',
-			id: uuidv4()
+			id: uuidv4(),
+			project: $projects[0],
+			workType: $workTypes[0],
+			status: $status[0]
 		});
 		showNewRow.set(true);
 	}
@@ -60,14 +106,17 @@
 	function saveTimesheet() {
 		const timesheetData = $newTimesheet;
 
-		if ($editingTimesheetId) {
-			updateTimesheet($editingTimesheetId, timesheetData);
-			editingTimesheetId.set(null);
-		} else {
-			addTimesheet(timesheetData);
-		}
+		// Validate before saving
+		if (validateForm()) {
+			if ($editingTimesheetId) {
+				updateTimesheet($editingTimesheetId, timesheetData);
+				editingTimesheetId.set(null);
+			} else {
+				addTimesheet(timesheetData);
+			}
 
-		showNewRow.set(false);
+			showNewRow.set(false);
+		}
 	}
 
 	function confirmDelete(id: string) {
@@ -94,25 +143,14 @@
 		}
 	);
 
-	let workTypes = writable<SelectTypes[]>([]); // Store for role options
-
-	async function loadWorkTypes() {
-		const fetchedWorkTypes = await fetchWorkType();
-		workTypes.set(fetchedWorkTypes);
-	}
-
-	let status = writable<SelectTypes[]>([]); // Store for role options
-
-	async function loadStatus() {
-		const fetchedStatus = await fetchStatus();
-		status.set(fetchedStatus);
-	}
-
-	let projects = writable<SelectTypes[]>([]); // Store for role options
-
-	async function loadProjects() {
-		const fetchedProjects = await fetchProjects();
-		projects.set(fetchedProjects);
+	function cancelTimesheetForm() {
+		showNewRow.set(false);
+		editingTimesheetId.set(null); // Reset editing state
+		errorDate.set('');
+		errorJiraNo.set('');
+		errorTaskUpdates.set('');
+		errorName.set('');
+		errorHours.set('');
 	}
 
 	onMount(() => {
@@ -152,11 +190,10 @@
 {/if}
 
 {#if $showNewRow}
-	<!-- Modal for creating a new timesheet -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
 		<!-- Modal Content -->
 		<div
-			class="w-full max-w-md rounded-xl bg-white p-6 shadow-lg md:max-w-lg lg:max-w-xl dark:bg-gray-900"
+			class="max-h-screen w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 shadow-lg md:max-w-lg lg:max-w-xl dark:bg-gray-900"
 		>
 			<div class="space-y-4">
 				<div>
@@ -174,6 +211,7 @@
 						/>
 					</div>
 				</div>
+				<!-- Date Field -->
 				<div>
 					<label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>Date</label
@@ -183,7 +221,11 @@
 						bind:value={$newTimesheet.date}
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 					/>
+					{#if $errorDate}
+						<div class="mt-2 text-sm text-red-500">{$errorDate}</div>
+					{/if}
 				</div>
+				<!-- Jira No Field -->
 				<div>
 					<label for="jiraNo" class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>Jira No</label
@@ -194,18 +236,26 @@
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 						placeholder="Jira No"
 					/>
+					{#if $errorJiraNo}
+						<div class="mt-2 text-sm text-red-500">{$errorJiraNo}</div>
+					{/if}
 				</div>
+				<!-- Task Updates Field -->
 				<div>
 					<label
 						for="taskUpdates"
 						class="block text-sm font-medium text-gray-700 dark:text-gray-300">Task Updates</label
 					>
-					<input
-						type="text"
+					<textarea
 						bind:value={$newTimesheet.taskUpdates}
+						id="taskUpdates"
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-						placeholder="Task updates"
-					/>
+						placeholder="Enter task updates"
+						rows="2"
+					></textarea>
+					{#if $errorTaskUpdates}
+						<div class="mt-2 text-sm text-red-500">{$errorTaskUpdates}</div>
+					{/if}
 				</div>
 				<div>
 					<label for="workType" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -238,6 +288,7 @@
 					</div>
 				</div>
 
+				<!-- Name Field -->
 				<div>
 					<label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>Your Name</label
@@ -248,7 +299,12 @@
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 						placeholder="Your name"
 					/>
+					{#if $errorName}
+						<div class="mt-2 text-sm text-red-500">{$errorName}</div>
+					{/if}
 				</div>
+
+				<!-- Hours Field -->
 				<div>
 					<label for="hours" class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>Hours</label
@@ -259,8 +315,17 @@
 						class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 						placeholder="Hours"
 					/>
+					{#if $errorHours}
+						<div class="mt-2 text-sm text-red-500">{$errorHours}</div>
+					{/if}
 				</div>
 				<div class="flex space-x-3">
+					<button
+						on:click={cancelTimesheetForm}
+						class="w-full rounded-lg bg-gray-500 px-4 py-2 text-white shadow-md transition-all hover:bg-gray-600 focus:ring focus:ring-gray-300 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-800"
+					>
+						Cancel
+					</button>
 					<button
 						on:click={saveTimesheet}
 						class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white shadow-md transition-all hover:bg-blue-700 focus:ring focus:ring-blue-300 focus:outline-none dark:bg-blue-500 dark:hover:bg-blue-600"
@@ -269,21 +334,13 @@
 						{:else}
 							Save{/if}</button
 					>
-					<button
-						on:click={() => {
-							showNewRow.set(false);
-							editingTimesheetId.set(null); // Reset editing state when canceling
-						}}
-						class="w-full rounded-lg bg-gray-500 px-4 py-2 text-white shadow-md transition-all hover:bg-gray-600 focus:ring focus:ring-gray-300 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-800"
-						>Cancel</button
-					>
 				</div>
 			</div>
 		</div>
 	</div>
 {/if}
 
-<div class="mb-6 flex items-center justify-between">
+<div class="mb-6 flex w-full items-center justify-between gap-4">
 	<h2 class="w-full text-2xl font-semibold text-gray-800 sm:w-auto dark:text-gray-100">
 		Timesheet Tracker
 	</h2>
@@ -342,29 +399,26 @@
 		>
 			<div class="flex items-center justify-between text-lg font-semibold">
 				{timesheet.project.label}
-				<!-- Show the label of the project -->
-				<div class="flex justify-end space-x-2">
+				<div class="flex gap-2">
 					<button
 						on:click={() => editTimesheet(timesheet)}
-						class="text-blue-500 hover:text-blue-700"
+						class="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600 focus:outline-none"
 					>
-						<Edit size={20} />
+						<Edit size={16} />
 					</button>
 					<button
 						on:click={() => confirmDelete(timesheet.id)}
-						class="text-red-500 hover:text-red-700"
+						class="rounded-full bg-red-500 p-2 text-white hover:bg-red-600 focus:outline-none"
 					>
-						<Trash size={20} />
+						<Trash size={16} />
 					</button>
 				</div>
 			</div>
 			<div>Date: {timesheet.date}</div>
 			<div>Jira No: {timesheet.jiraNo}</div>
 			<div>Status: {timesheet.status.label}</div>
-			<!-- Show the label of the status -->
 			<div>Task Updates: {timesheet.taskUpdates}</div>
 			<div>Work Type: {timesheet.workType.label}</div>
-			<!-- Show the label of the work type -->
 			<div>Hours: {timesheet.hours}</div>
 		</div>
 	{/each}
